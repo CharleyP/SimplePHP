@@ -10,7 +10,18 @@ class App
 		$arr = explode("index.php",$_SERVER['REQUEST_URI']);
 		$mvc_path = array_pop($arr);
 		$mvc_path_arr = explode("/",trim($mvc_path,"/"));
-		@list($app,$class,$function) = $mvc_path_arr;
+		//获取应用目录/控制器/方法
+		$app = array_shift($mvc_path_arr);
+		$class = array_shift($mvc_path_arr);
+		$function = array_shift($mvc_path_arr);
+		$request_url = implode("|",$mvc_path_arr);
+		//正则获取URL参数
+		preg_replace_callback("/(\w+)\|([^\|])/", function($match) use (&$val){
+			$val[$match[1]] = $match[2];
+		}, $request_url);
+
+
+		//@list($app,$class,$function) = $mvc_path_arr;
 		$root_path = getcwd()."/";
 		if(!file_exists($root_path."app/".$app)){
 			exit($app."模块未发现");
