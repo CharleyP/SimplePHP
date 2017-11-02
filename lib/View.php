@@ -7,6 +7,7 @@ class View
 {
 	public $module;
 	public $action;
+	public $template;
 	function __construct()
 	{
 		if(empty($this->module)){
@@ -19,38 +20,42 @@ class View
 			$this->controller = APP::$controller;
 		}
 	}
-	public function getViewData(){
+	public function getTemplate(){
 
 		$view_path = getcwd()."/"."app/".$this->module."/View/".$this->action.".html";
 		$data = file_get_contents($view_path);
 		return $data;
 	}
 	public function assign($variable ,$value){
-		$view_data = $this->getViewData();
-		$view_data = preg_replace("/{{[\s\w\$]+}}/","<?php echo \$value; ?>",$view_data);
-		$cache_name = md5($this->module.$this->controller.$this->action).".php";
+		$this->template[$variable] = $value;
+	}
+	public function fetch(){
+		$template_data = $this->getTemplate();
+		$value = "sql";
 		$root_path = getcwd()."/";
-		if(!file_exists($root_path."cache/".$this->module)){
-			mkdir($root_path."cache/".$this->module,0777);
-		}
-		//输出缓存文件
+		$cache_name = md5($this->module.$this->controller.$this->action).".php";
+		/*foreach ($this->template as $key => $value) {
+			$view_data = preg_replace("/{{[\s]+($".$key.")[\s]+}}/","<?php echo $$key; ?>",$template_data);
+		}*/
+		$view_data = preg_replace("/{{[\s]+/","<?php echo ",$template_data);
+		$view_data = preg_replace("/[\s]+}}/","; ?>",$view_data);
+		
 		file_put_contents($root_path."cache/".$this->module."/".$cache_name, $view_data);
+		$cacheFile = $root_path."cache/".$this->module."/".$cache_name;
+		// 页面缓存
+        ob_start();
+        ob_implicit_flush(0);
+        // 读取编译存储
 
-
-		//$data = file_get_contents("");
-
-		$test = "<!DOCTYPE html>
-				<html>
-				<head>
-					<title></title>
-				</head>
-				<body>
-				<div><?php echo 'SELECT UID,EID,PHONE FROM p101' ?></div>
-				</body>
-				</html>";
-		// eval("\$test = \"$test\";");
-		echo $test;
-		exit;
+		if (!empty($this->template) && is_array($this->template)) {
+            // 模板阵列变量分解成为独立变量
+            extract($this->template, EXTR_OVERWRITE);
+        }
+        //载入模版缓存文件
+        include $cacheFile;
+		// 获取并清空缓存
+        $content = ob_get_clean();
+		echo $content;
 	}
 }
 
