@@ -24,21 +24,13 @@ class Index extends Controller
 		// ob_end_flush();
 	}
 	public function test(){
-		$data = "zzzzz";
-		$test = "qqqqimgimgsdfsfimgimgqqqq";
-		$test1 = preg_replace("/img{2}/","zzzzzzzz",$test);
-		echo $test1;
-		exit;
-		$data = "qwer";
-		$test = "1234{{$data}}9";
-		$test1 = preg_replace("/^(\{){2}(.*)(\}){2}$/","<?php echo $data; ?>",$test);
-		echo $test1;
-		exit;
-
 		$view = new View();
 		$query = new Query();
 		$sql = $query->table("p101")->select("UID,EID,PHONE");
+		$list = "1234";
 		$view->assign("sql",$sql);
+		$view->assign("list",$list);
+		$view->fetch();
 	}
 }
 
