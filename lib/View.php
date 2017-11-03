@@ -30,23 +30,20 @@ class View
 		$this->template[$variable] = $value;
 	}
 	public function fetch(){
-		$template_data = $this->getTemplate();
-		$value = "sql";
 		$root_path = getcwd()."/";
 		$cache_name = md5($this->module.$this->controller.$this->action).".php";
-		/*foreach ($this->template as $key => $value) {
-			$view_data = preg_replace("/{{[\s]+($".$key.")[\s]+}}/","<?php echo $$key; ?>",$template_data);
-		}*/
-		$view_data = preg_replace("/{{[\s]+/","<?php echo ",$template_data);
-		$view_data = preg_replace("/[\s]+}}/","; ?>",$view_data);
-		
-		file_put_contents($root_path."cache/".$this->module."/".$cache_name, $view_data);
 		$cacheFile = $root_path."cache/".$this->module."/".$cache_name;
+		if(!file_exists($cacheFile)){
+			$template_data = $this->getTemplate();
+			$view_data = preg_replace("/{{[\s]+/","<?php echo ",$template_data);
+			$view_data = preg_replace("/[\s]+}}/","; ?>",$view_data);
+			//输出模板缓存文件
+			file_put_contents($cacheFile, $view_data);
+		}
 		// 页面缓存
         ob_start();
         ob_implicit_flush(0);
         // 读取编译存储
-
 		if (!empty($this->template) && is_array($this->template)) {
             // 模板阵列变量分解成为独立变量
             extract($this->template, EXTR_OVERWRITE);
