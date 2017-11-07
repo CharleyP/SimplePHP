@@ -1,7 +1,5 @@
 <?php 
-/**
-* 
-*/
+
 class DBChoiceFactory
 {
 	const DB_TYPE_MYSQL = "mysql";
