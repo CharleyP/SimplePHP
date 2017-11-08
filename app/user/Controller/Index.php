@@ -6,6 +6,7 @@ use lib\Request;
 use lib\Controller;
 use lib\View;
 
+
 class Index extends Controller
 {
 	public function index(Request $request)
@@ -16,12 +17,8 @@ class Index extends Controller
 		//exit;
 
 		$query = new Query();
-		$sql = $query->table("p101")->select("UID,EID,PHONE");
-		// ob_start();
-		// echo $sql;
-		// $data = ob_get_contents();
-		// file_put_contents($_SERVER['DOCUMENT_ROOT']."/SimplePHP/cache/text.html", $data);
-		// ob_end_flush();
+		$data = $query->table("user")->select();
+		print_r($data);
 	}
 	public function test(){
 		$view = new View();
@@ -29,7 +26,7 @@ class Index extends Controller
 		$sql = $query->table("p101")->select("UID,EID,PHONE");
 		$list = "1234";
 		$view->assign("sql",$sql);
-		$view->assign("list",$list);
+		$view->assign("list1",$list);
 		$view->fetch();
 	}
 }
