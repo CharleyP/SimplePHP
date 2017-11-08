@@ -17,6 +17,9 @@ class Query
 	public function __construct(){
 
 	}
+	public function getMySQLType(){
+		
+	}
 	public function table($table){
 		$this->table = $table;
 		return $this;
@@ -33,7 +36,8 @@ class Query
 			$this->where = " WHERE ".$this->where;	
 		}
 		$this->query = "SELECT ".$columns." FROM ".$this->table.$this->join.$this->where.$this->group.$this->order.$this->limit;
-		return $this->query;
+		$connection = new Connection();
+		return $connection->query($this->query);
 	}
 	public function limit($start = "" ,$end = ""){
 		if(!empty($end) && !empty($start)){
@@ -164,7 +168,8 @@ class Query
 		$this->query = "SELECT COUNT(".$columns.") FROM ".$this->table.$this->join.$this->where.$this->group.$this->order.$this->limit;
 		return $this->query;
 	}
-	//尚未解决用别名的时候 后面的关联条件同意替换的问题
+	//尚未解决用别名的时候 后面的关联条件统一替换的问题
+
 }
 
 
