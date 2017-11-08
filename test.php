@@ -1,4 +1,20 @@
 <?php
+
+$con = new mysqli("localhost", "root", "root", "test");
+$con->query('set names utf8;'); 
+$sql = "SELECT * FROM user";  
+$result = $con->query($sql);
+$data=array();
+while ($tmp=mysqli_fetch_assoc($result)) {
+    $data[]=$tmp;
+}
+print_r($data);
+exit;
+
+
+
+
+
 require 'index.php';
 use lib\db\Query;
 
