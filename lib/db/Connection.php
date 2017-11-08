@@ -1,5 +1,9 @@
 <?php
 namespace lib\db;
+
+use lib\db\Mysqli;
+use lib\db\PDO;
+use lib\Exception;
 /**
 * 
 */
@@ -7,10 +11,11 @@ namespace lib\db;
 class Connection
 {
 	protected $host = "localhost";
-	protected $db = "pes";
+	protected $db = "test";
 	protected $username = "root";
-	protected $password = "gaosubo3000";
+	protected $password = "root";
 	protected $conn = null;
+	protected $type = "mysqli";
 	function __construct()
 	{
 		if($this->conn == null){
@@ -19,15 +24,43 @@ class Connection
 	}
 	public function connect(){
 		try {
-		    $conn = new PDO("mysql:host=".$this->host.";dbname=".$this->db, $this->username, $this->password);
-		    // $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			if(empty($type)){
+				throw new Exception("请选择MySQL连接方式");
+			}
+			if($this->type == "mysqli"){
+				$conn = new Mysqli($this->host, $this->username, $this->password, $this->db);
+			}else if($this->type == "pdo"){
+				$conn = new PDO("mysql:host=".$this->host.";dbname=".$this->db, $this->username, $this->password);
+			}else{
+				throw new Exception("请选择MySQL连接方式");
+			}
 		    $this->conn = $conn;
 		    return $this->conn;
 		}
-		catch(PDOException $e)
+		catch(Exception $e)
 		{
-		    //echo $e->getMessage();
+		    echo $e->getMessage();
+		    exit();
 		}
+	}
+	public function query($query){
+		$result = $this->conn->query($query);
+		$data=array();
+		while ($tmp=mysqli_fetch_assoc($result)) {
+		    $data[]=$tmp;
+		}
+		return $data;
+	}
+	public function queryMysqli($query){
+		$result = $this->conn->query($query);
+		$data=array();
+		while ($tmp=mysqli_fetch_assoc($result)) {
+		    $data[]=$tmp;
+		}
+		return $data;
+	}
+	public function queryPDO(){
+
 	}
 }
 
