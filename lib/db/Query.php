@@ -77,7 +77,83 @@ class Query
 		$this->order = trim($this->order,",");
 		return $this;
 	}
-	public function insert(){
+	/*支持传入
+	$insert = array(
+		'id'	=>	1,
+		'name'	=>	'jack',
+		'age'	=>	20,
+	);
+	$insert = [
+		['name'	=>	'pater','age'	=>	30],
+		['name'	=>	'xiaoming','age'	=>	20],
+	]
+	返回插入成功条数，开启事物后执行
+	*/
+	public function insert($data){
+		//先判断是单挑插入还是多条插入
+		if(is_array($data)){
+			$insert_key = $insert_val = "(";
+			if(count($data) != count($data, 1)){//多条插入，二维数组
+				/*foreach ($data as $data_detail) {
+					foreach ($data_detail as $key => $value) {
+						$insert_key = "";
+						$insert_key .= "'".$key."',";
+						if(is_numeric($value)){
+							$insert_val .= $value.",";
+						}else if(is_string($value)){
+							$insert_val .= "'".$value."',";
+						}else if(is_null($value)){
+							$insert_val .= $value.",";
+						}
+						$insert_key = trim($insert_key,",");
+						$insert_val = trim($insert_val,",");
+						$insert_key .= ")";
+						$insert_val .= ")";
+					}
+				}
+				$insert_query = $insert_key." VALUES ".$insert_val;*/
+			}else{//单条插入
+				$insert_key_str = $insert_val_str = "(";
+				$insert_key_arr = array_keys($data);
+				$insert_key_str .= implode($insert_key_arr,",");
+				$insert_val_arr = array_values($data);
+				//添加引号动作
+				$func = function($value) {
+					if(is_string($value)){
+						return "'".$value."'";
+					}else if(is_null($value)){
+						return "''";
+					}else{
+						return $value;
+					}
+				};
+				$insert_val_arr = array_map($func, $insert_val_arr);
+				$insert_val_str .= trim(implode($insert_val_arr,","),",");
+				$insert_key_str .= ")";
+				$insert_val_str .= ")";
+				$this->query = "INSERT INTO ".$this->table." ".$insert_key_str." VALUES ".$insert_val_str;
+				
+				/*
+				foreach ($data as $key => $value) {
+					$insert_key .= "'".$key."',";
+					if(is_numeric($value)){
+						$insert_val .= $value.",";
+					}else if(is_string($value)){
+						$insert_val .= "'".$value."',";
+					}else if(is_null($value)){
+						$insert_val .= $value.",";
+					}
+				}
+				$insert_key = trim($insert_key,",");
+				$insert_val = trim($insert_val,",");
+				$insert_key .= ")";
+				$insert_val .= ")";
+				$this->query = "INSERT INTO ".$this->table." ".$insert_key." VALUES ".$insert_val;
+				echo $this->query;
+				*/
+			}
+		}
+		
 
 	}
 	public function update(){
