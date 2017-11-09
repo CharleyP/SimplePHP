@@ -29,6 +29,17 @@ class Index extends Controller
 		$view->assign("list1",$list);
 		$view->fetch();
 	}
+	public function insert(){
+		// $data = [
+		// 	['id'=>1,'name'=>'jack1','age'=>21],
+		// 	['id'=>2,'name'=>'jack2','age'=>22],
+		// 	['id'=>3,'name'=>'jack3','age'=>23],
+		// ];
+		$data = ['id'=>1,'name'=>'jack1','age'=>21,'scholl'=>null];
+		$query = new Query();
+		$sql = $query->table("p101")->insert($data);
+		echo $sql;
+	}
 }
 
  ?>
