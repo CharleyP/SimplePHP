@@ -1,5 +1,6 @@
 <?php
 namespace lib\db;
+use lib\db\MysqliConn;
 use lib\db\Connection;
 /**
 * 
@@ -36,8 +37,11 @@ class Query
 			$this->where = " WHERE ".$this->where;	
 		}
 		$this->query = "SELECT ".$columns." FROM ".$this->table.$this->join.$this->where.$this->group.$this->order.$this->limit;
-		$connection = new Connection();
-		return $connection->query($this->query);
+		// $data = new Connection();
+		// return $data->query($this->query);
+		// return $this->query;
+		$data = new MysqliConn();
+		return $data->select($this->query);
 	}
 	public function limit($start = "" ,$end = ""){
 		if(!empty($end) && !empty($start)){
@@ -133,6 +137,12 @@ class Query
 		}
 		
 
+	}
+	public function insertOne(){
+		
+	}
+	public function insertAll(){
+		
 	}
 	public function update(){
 
