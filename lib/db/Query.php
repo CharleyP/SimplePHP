@@ -1,7 +1,7 @@
 <?php
 namespace lib\db;
 use lib\db\MysqliConn;
-use lib\db\Connection;
+use lib\App;
 /**
 * 
 */
@@ -37,11 +37,7 @@ class Query
 			$this->where = " WHERE ".$this->where;	
 		}
 		$this->query = "SELECT ".$columns." FROM ".$this->table.$this->join.$this->where.$this->group.$this->order.$this->limit;
-		// $data = new Connection();
-		// return $data->query($this->query);
-		// return $this->query;
-		$data = new MysqliConn();
-		return $data->select($this->query);
+		return $this->conn(__FUNCTION__);
 	}
 	public function limit($start = "" ,$end = ""){
 		if(!empty($end) && !empty($start)){
@@ -234,6 +230,12 @@ class Query
 	}
 	//尚未解决用别名的时候 后面的关联条件统一替换的问题
 
+	public function conn($type){
+		$dataBaseInfo = APP::getConfig();
+		$mysqlTypeName = "\lib\\db\\".ucfirst($dataBaseInfo['type'])."Conn";
+		$data = new $mysqlTypeName();
+		return $data->$type($this->query);
+	}
 }
 
 
