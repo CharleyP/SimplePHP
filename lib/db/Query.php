@@ -232,7 +232,7 @@ class Query
 
 	public function conn($type){
 		$dataBaseInfo = APP::getConfig();
-		$mysqlTypeName = "\lib\\db\\".ucfirst($dataBaseInfo['type'])."Conn";
+		$mysqlTypeName = "\lib\\db\\".ucfirst($dataBaseInfo['conntype'])."Conn";
 		$data = new $mysqlTypeName();
 		return $data->$type($this->query);
 	}
