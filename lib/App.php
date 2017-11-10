@@ -9,6 +9,7 @@ class App
 	public static $module;
 	public static $controller;
 	public static $action;
+	public static $config = [];
 
 	public static function run()
 	{
@@ -62,6 +63,10 @@ class App
 		}else{
 			print_r($data);
 		}
+	}
+	public static function getConfig(){
+		self::$config = include "./config.php";
+		return self::$config;
 	}
 }
 
