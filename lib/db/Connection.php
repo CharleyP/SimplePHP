@@ -1,4 +1,5 @@
 <?php
+//暂时废弃不适用
 namespace lib\db;
 
 use lib\db\Mysqli;
@@ -16,7 +17,7 @@ class Connection
 	protected $password = "root";
 	protected $conn = null;
 	protected $type = "mysqli";
-	function __construct()
+	public function __construct()
 	{
 		if($this->conn == null){
 			$this->connect();
@@ -24,7 +25,7 @@ class Connection
 	}
 	public function connect(){
 		try {
-			if(empty($type)){
+			if(empty($this->type)){
 				throw new Exception("请选择MySQL连接方式");
 			}
 			if($this->type == "mysqli"){
