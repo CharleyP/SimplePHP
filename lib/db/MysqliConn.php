@@ -21,10 +21,10 @@ class MysqliConn implements Mysql
 	}
 	public function getDatabaseInfo(){
 		$dataBaseInfo = APP::getConfig();
-		$this->host = $dataBaseInfo['hostname'];
-		$this->db = $dataBaseInfo['database'];
-		$this->username = $dataBaseInfo['username'];
-		$this->password = $dataBaseInfo['password'];
+		$this->host = APP::$config['hostname'];
+		$this->db = APP::$config['database'];
+		$this->username = APP::$config['username'];
+		$this->password = APP::$config['password'];
 	}
 	public function connect(){
 		$this->conn = new \Mysqli($this->host, $this->username, $this->password, $this->db);
