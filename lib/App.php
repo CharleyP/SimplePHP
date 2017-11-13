@@ -18,37 +18,35 @@ class App
 	//获取URL各参数
 	public static function checkUrl(){
 		//此处还未实现如何隐藏index.php功能
-		$arr = explode("index.php",$_SERVER['REQUEST_URI']);
-		$mvc_path = array_pop($arr);
-		$mvc_path_arr = explode("/",trim($mvc_path,"/"));
+		$mvc_path_arr = explode("/",trim($_SERVER['PATH_INFO'],"/"));
 		//获取应用目录/控制器/方法
-		self::$module = array_shift($mvc_path_arr);
-		self::$controller = array_shift($mvc_path_arr);
-		self::$action = array_shift($mvc_path_arr);
-		$request_url = implode("|",$mvc_path_arr);
-
+		list(self::$module,self::$controller,self::$action) = $mvc_path_arr;
+		self::checkPath();
+		//$request_url = $_SERVER['QUERY_STRING'];
 
 		//正则获取URL参数
-		if(!empty($request_url)){//如果参数待在url内，即为GET请求
-			if(!preg_match("/\?[a-zA-Z0-9_]*=\w*(&[a-zA-Z0-9_]*=\w*)*/", $request_url)){//如果不是?id=1&name=2的格式
-				preg_replace_callback("/(\w+)\|([^\|])/", function($match) use (&$val){
-					$val[$match[1]] = $match[2];
-				}, $request_url);
-				self::$request = $val;
-				unset($val);
-			}else{//如果是?id=1&name=2的格式
-				$str = explode("?",$request_url);
-				parse_str($str[1],$param);
-				self::$request = $param;
+		$url_match = array_slice($mvc_path_arr,3);
+		if(!empty($url_match)){
+			$url_match = implode("|",$url_match);
+			preg_replace_callback("/(\w+)\|([^\|])/", function($match) use (&$val){
+				$val[$match[1]] = $match[2];
+			}, $url_match);
+			self::$request = $val;
+			unset($val);
+		}else{
+			if(!empty($_GET)){
+				array_push(self::$request,$_GET);
 			}
-		}else{//POST请求
-			self::$request = $_POST;
+			if(!empty($_POST)){
+				array_push(self::$request,$_POST);
+			}
 		}
-		self::checkPath();
+		
 	}
 	//检测路径合法性
 	public static function checkPath(){
-		$root_path = getcwd()."/";
+		self::getConfig();
+		$root_path = self::$config['ROOT_PATH'];
 		if(!file_exists($root_path."app/".self::$module)){
 			exit(self::$module."模块未发现");
 		}else if(!file_exists($root_path."app/".self::$module."/Controller/".self::$controller.".php")){
