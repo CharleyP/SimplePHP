@@ -42,7 +42,7 @@ class App
 				self::$request = $param;
 			}
 		}else{//POST请求
-
+			self::$request = $_POST;
 		}
 		self::checkPath();
 	}
