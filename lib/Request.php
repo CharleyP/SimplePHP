@@ -11,13 +11,14 @@ class Request
 		}
 	}
 	public function param($key = ""){
-		if(!array_key_exists($key,$this->request)){
-			return false;
-		}
 		if(empty($key)){
 			return $this->request;
 		}else{
-			return $this->request[$key];
+			if(!array_key_exists($key,$this->request)){
+				return false;
+			}else{
+				return $this->request[$key];
+			}
 		}
 	}
 }
