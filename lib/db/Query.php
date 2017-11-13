@@ -37,6 +37,7 @@ class Query
 			$this->where = " WHERE ".$this->where;	
 		}
 		$this->query = "SELECT ".$columns." FROM ".$this->table.$this->join.$this->where.$this->group.$this->order.$this->limit;
+		return $this->query;
 		return $this->conn(__FUNCTION__);
 	}
 	public function limit($start = "" ,$end = ""){
