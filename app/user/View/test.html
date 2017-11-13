@@ -7,8 +7,8 @@
 <script type="text/javascript">
 	$(function(){
 		$.ajax({
-			url:"/simplePHP/index.php/user/index/index/",
-			type:"GET",
+			url:"/simplePHP/index.php/user/index/index",
+			type:"POST",
 			dataType:"json",
 			data:{id:123,name:"jack"},
 			success:function(data){
@@ -21,6 +21,7 @@
 	})
 </script>
 <body>
-
+<div>{{ $sql }}</div>
+<div>{{ $list }}</div>
 </body>
 </html>
