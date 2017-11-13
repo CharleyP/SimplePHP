@@ -11,14 +11,11 @@ class Index extends Controller
 {
 	public function index(Request $request)
 	{
-		//print_r($request->param('qe'));
-		//$request = Request::instance();
-		//echo $request->param();
-		//exit;
-
-		$query = new Query();
-		$data = $query->table("user")->select();
-		print_r($data);
+		print_r($request->param());
+		exit;
+		// $query = new Query();
+		// $data = $query->table("user")->select();
+		// print_r($data);
 	}
 	public function test(){
 		$view = new View();
@@ -26,7 +23,7 @@ class Index extends Controller
 		$sql = $query->table("p101")->select("UID,EID,PHONE");
 		$list = "1234";
 		$view->assign("sql",$sql);
-		$view->assign("list1",$list);
+		$view->assign("list",$list);
 		$view->fetch();
 	}
 	public function insert(){
@@ -39,6 +36,25 @@ class Index extends Controller
 		$query = new Query();
 		$sql = $query->table("p101")->insert($data);
 		echo $sql;
+	}
+	public function update(){
+		$query = new Query();
+		$data = array(
+			'name'	=>	'jack',
+			'age'	=>	20,
+		);
+		$where['id'] = 1;
+		$where['name'] = 1;
+		//$where = "id=1 or (id=2 and age>20)";
+		//$sql = "update user set name='jack',age=20 where id=1 and name=1";
+		$sql = $query->table("user")->where($where)->update($data);
+	}
+	public function delete(){
+		//$sql="delete from table where ...";
+		$query = new Query();
+		//$where['id'] = ['in',[1,2,3]];
+		$where = "id in (1,2,3)";
+		$sql = $query->table("user")->where($where)->delete();
 	}
 }
 
