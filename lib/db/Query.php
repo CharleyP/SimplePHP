@@ -140,11 +140,34 @@ class Query
 	public function insertAll(){
 		
 	}
-	public function update(){
-
+	public function update($data){
+		if(is_array($data)){
+			$update = "";
+			foreach ($data as $key => $value) {
+				if(is_numeric($value)){
+					$update .= $key."=".$value.",";
+				}else if(is_string($value) || empty($value)){
+					$update .= $key."='".$value."',";
+				}else{
+					$update .= $key."=".$value.",";
+				}
+			}
+			$update = trim($update,",");
+			if(!empty($this->where)){
+				$this->where = " WHERE ".$this->where;	
+			}
+			$this->query = "UPDATE ".$this->table." SET ".$update.$this->where;
+			echo $this->query;
+			exit;
+		}
 	}
 	public function delete(){
-
+		if(!empty($this->where)){
+				$this->where = " WHERE ".$this->where;	
+		}
+		$this->query = "DELETE FROM ".$this->table.$this->where;
+		echo $this->query;
+		exit;
 	}
 	/*
 	$where_arr['UID'] = 1;
@@ -155,6 +178,9 @@ class Query
 	支持$sql = $query->table("user")->where($where_arr,'and')->where($whereOr,"or")->group("id,name")->order("UID")->limit(10, 20)->select();
 	$sql = $query->table("user")->where("UID=1 and AGE>20")->where("UID=2","OR")->select();
 	*/
+	//where类暂不支持in操作  
+	//不支持 id=1 or id=2的操作
+	//目前where方法还有很多地方需要优化修改，建议直接使用传where条件字符串的方式使用
 	public function where($where_arr = [] ,$flag = "AND"){
 		if(is_array($where_arr)){
 			foreach ($where_arr as $key => &$value) {
@@ -167,8 +193,11 @@ class Query
 					list($sign,$val) = $value;
 					if(is_string($val)){
 						$val = "'".$val."'";
+					}else if(is_array($val)){
+						$val = implode(",",$val);
+						$val = "(".trim($val,",").")";
 					}
-					$data[] = $key.$sign.$val;
+					$data[] = $key." ".$sign." ".$val;
 				}
 			}
 			if(!empty($this->where)){//此处共有部分还可以继续优化
@@ -230,7 +259,7 @@ class Query
 	}
 	//尚未解决用别名的时候 后面的关联条件统一替换的问题
 
-	public function conn($type){
+	public function conn($type,$query=""){
 		$dataBaseInfo = APP::getConfig();
 		$mysqlTypeName = "\lib\\db\\".ucfirst($dataBaseInfo['conntype'])."Conn";
 		$data = new $mysqlTypeName();
