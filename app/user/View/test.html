@@ -3,8 +3,24 @@
 <head>
 	<title></title>
 </head>
+<script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.1/jquery.js"></script>
+<script type="text/javascript">
+	$(function(){
+		$.ajax({
+			url:"/simplePHP/index.php/user/index/index/",
+			type:"GET",
+			dataType:"json",
+			data:{id:123,name:"jack"},
+			success:function(data){
+				console.log(data)
+			},
+			error:function(){
+
+			}
+		})
+	})
+</script>
 <body>
-<div style="width:100px;height:100px;border:1px solid red">{{ $sql }}</div>
-<div style="width:100px;height:100px;border:1px solid red">{{ $list }}</div>
+
 </body>
 </html>
