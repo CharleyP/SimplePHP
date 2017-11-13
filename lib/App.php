@@ -18,30 +18,34 @@ class App
 	//获取URL各参数
 	public static function checkUrl(){
 		//此处还未实现如何隐藏index.php功能
-		$mvc_path_arr = explode("/",trim($_SERVER['PATH_INFO'],"/"));
-		//获取应用目录/控制器/方法
-		list(self::$module,self::$controller,self::$action) = $mvc_path_arr;
-		self::checkPath();
-		//$request_url = $_SERVER['QUERY_STRING'];
 
-		//正则获取URL参数
-		$url_match = array_slice($mvc_path_arr,3);
-		if(!empty($url_match)){
-			$url_match = implode("|",$url_match);
-			preg_replace_callback("/(\w+)\|([^\|])/", function($match) use (&$val){
-				$val[$match[1]] = $match[2];
-			}, $url_match);
-			self::$request = $val;
-			unset($val);
+		if(!isset($_SERVER['PATH_INFO'])){
+			
 		}else{
-			if(!empty($_GET)){
-				array_push(self::$request,$_GET);
-			}
-			if(!empty($_POST)){
-				array_push(self::$request,$_POST);
+			$mvc_path_arr = explode("/",trim($_SERVER['PATH_INFO'],"/"));
+			//获取应用目录/控制器/方法
+			list(self::$module,self::$controller,self::$action) = $mvc_path_arr;
+			self::checkPath();
+			//$request_url = $_SERVER['QUERY_STRING'];
+
+			//正则获取URL参数
+			$url_match = array_slice($mvc_path_arr,3);
+			if(!empty($url_match)){
+				$url_match = implode("|",$url_match);
+				preg_replace_callback("/(\w+)\|([^\|])/", function($match) use (&$val){
+					$val[$match[1]] = $match[2];
+				}, $url_match);
+				self::$request = $val;
+				unset($val);
+			}else{
+				if(!empty($_GET)){
+					array_push(self::$request,$_GET);
+				}
+				if(!empty($_POST)){
+					array_push(self::$request,$_POST);
+				}
 			}
 		}
-		
 	}
 	//检测路径合法性
 	public static function checkPath(){
