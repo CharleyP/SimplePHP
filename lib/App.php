@@ -26,13 +26,23 @@ class App
 		self::$controller = array_shift($mvc_path_arr);
 		self::$action = array_shift($mvc_path_arr);
 		$request_url = implode("|",$mvc_path_arr);
+
+
 		//正则获取URL参数
-		if(!empty($request_url)){
-			preg_replace_callback("/(\w+)\|([^\|])/", function($match) use (&$val){
-				$val[$match[1]] = $match[2];
-			}, $request_url);
-			self::$request = $val;
-			unset($val);
+		if(!empty($request_url)){//如果参数待在url内，即为GET请求
+			if(!preg_match("/\?[a-zA-Z0-9_]*=\w*(&[a-zA-Z0-9_]*=\w*)*/", $request_url)){//如果不是?id=1&name=2的格式
+				preg_replace_callback("/(\w+)\|([^\|])/", function($match) use (&$val){
+					$val[$match[1]] = $match[2];
+				}, $request_url);
+				self::$request = $val;
+				unset($val);
+			}else{//如果是?id=1&name=2的格式
+				$str = explode("?",$request_url);
+				parse_str($str[1],$param);
+				self::$request = $param;
+			}
+		}else{//POST请求
+
 		}
 		self::checkPath();
 	}
