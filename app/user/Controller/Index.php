@@ -11,8 +11,6 @@ class Index extends Controller
 {
 	public function index(Request $request)
 	{
-		print_r($request->param());
-		exit;
 		// $query = new Query();
 		// $data = $query->table("user")->select();
 		// print_r($data);
@@ -26,16 +24,25 @@ class Index extends Controller
 		$view->assign("list",$list);
 		$view->fetch();
 	}
-	public function insert(){
-		// $data = [
-		// 	['id'=>1,'name'=>'jack1','age'=>21],
-		// 	['id'=>2,'name'=>'jack2','age'=>22],
-		// 	['id'=>3,'name'=>'jack3','age'=>23],
-		// ];
-		$data = ['id'=>1,'name'=>'jack1','age'=>21,'scholl'=>null];
+	public function select(){
 		$query = new Query();
-		$sql = $query->table("p101")->insert($data);
-		echo $sql;
+		$data = $query->table("user")->select();
+		print_r($data);
+		exit;
+	}
+	public function insert(){
+		$dataAll = [
+			['id'=>1,'name'=>'jack1','age'=>21],
+			['id'=>2,'name'=>'jack2','age'=>22],
+			['id'=>3,'name'=>'jack3','age'=>23],
+		];
+		$dataOne = ['id'=>1,'name'=>'jack1','age'=>21,'scholl'=>null];
+		$query = new Query();
+		$sqlOne = $query->table("user")->insert($dataOne);
+		echo $sqlOne;
+		exit;
+		$dataAll = $query->table("p101")->insert($dataAll);
+		echo $dataAll;
 	}
 	public function update(){
 		$query = new Query();
