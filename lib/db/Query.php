@@ -37,7 +37,7 @@ class Query
 			$this->where = " WHERE ".$this->where;	
 		}
 		$this->query = "SELECT ".$columns." FROM ".$this->table.$this->join.$this->where.$this->group.$this->order.$this->limit;
-		return $this->query;
+		//return $this->query;
 		return $this->conn(__FUNCTION__);
 	}
 	public function limit($start = "" ,$end = ""){
@@ -93,53 +93,63 @@ class Query
 	public function insert($data){
 		//先判断是单挑插入还是多条插入
 		if(is_array($data)){
-			$func = function($value) {//添加引号动作
-				if(is_string($value)){
-					return "'".$value."'";
-				}else if(is_null($value)){
-					return "''";
-				}else{
-					return $value;
-				}
-			};
 			if(count($data) != count($data, 1)){//多条插入，二维数组
-				$insert_key_str = "(";
-				$insert_val_str = "";
-				foreach ($data as $key => $value) {
-					$insert_val_str_detail = "(";
-					if($key == 0){
-						$insert_key_arr = array_keys($value);
-						$insert_key_str .= implode($insert_key_arr,",");
-					}
-					$insert_val_arr = array_values($value);
-					$insert_val_arr = array_map($func, $insert_val_arr);
-					$insert_val_str_detail .= trim(implode($insert_val_arr,","),",");
-					$insert_val_str_detail .= ")";
-					$insert_val_str .= $insert_val_str_detail.",";
-				}
-				$insert_key_str .= ")";
-				$insert_val_str = trim($insert_val_str,",");
+				$this->insertAll($data);
 			}else{//单条插入
-				$insert_key_str = $insert_val_str = "(";
-				$insert_key_arr = array_keys($data);
-				$insert_key_str .= implode($insert_key_arr,",");
-				$insert_val_arr = array_values($data);
-				$insert_val_arr = array_map($func, $insert_val_arr);
-				$insert_val_str .= trim(implode($insert_val_arr,","),",");
-				$insert_key_str .= ")";
-				$insert_val_str .= ")";
+				$this->insertOne($data);
 			}
-			$this->query = "INSERT INTO ".$this->table." ".$insert_key_str." VALUES ".$insert_val_str;
-			return $this->query;
+			//return $this->query;
+			return $this->conn(__FUNCTION__);
 		}
-		
-
 	}
-	public function insertOne(){
-		
+	//添加引号动作,修改变量的类型
+	public function insertChangeValType($value){
+		if(is_string($value)){
+			return "'".$value."'";
+		}else if(is_null($value)){
+			return "''";
+		}else{
+			return $value;
+		}
 	}
-	public function insertAll(){
-		
+	public function insertOne($data){
+		// $func = function($value) {//添加引号动作
+		// 	if(is_string($value)){
+		// 		return "'".$value."'";
+		// 	}else if(is_null($value)){
+		// 		return "''";
+		// 	}else{
+		// 		return $value;
+		// 	}
+		// };
+		$insert_key_str = $insert_val_str = "(";
+		$insert_key_arr = array_keys($data);
+		$insert_key_str .= implode($insert_key_arr,",");
+		$insert_val_arr = array_values($data);
+		$insert_val_arr = array_map(array($this, 'insertChangeValType'), $insert_val_arr);
+		$insert_val_str .= trim(implode($insert_val_arr,","),",");
+		$insert_key_str .= ")";
+		$insert_val_str .= ")";
+		$this->query = "INSERT INTO ".$this->table." ".$insert_key_str." VALUES ".$insert_val_str;
+	}
+	public function insertAll($data){
+		$insert_key_str = "(";
+		$insert_val_str = "";
+		foreach ($data as $key => $value) {
+			$insert_val_str_detail = "(";
+			if($key == 0){
+				$insert_key_arr = array_keys($value);
+				$insert_key_str .= implode($insert_key_arr,",");
+			}
+			$insert_val_arr = array_values($value);
+			$insert_val_arr = array_map(array($this, 'insertChangeValType'), $insert_val_arr);
+			$insert_val_str_detail .= trim(implode($insert_val_arr,","),",");
+			$insert_val_str_detail .= ")";
+			$insert_val_str .= $insert_val_str_detail.",";
+		}
+		$insert_key_str .= ")";
+		$insert_val_str = trim($insert_val_str,",");
+		$this->query = "INSERT INTO ".$this->table." ".$insert_key_str." VALUES ".$insert_val_str;
 	}
 	public function update($data){
 		if(is_array($data)){
@@ -213,8 +223,6 @@ class Query
 				$this->where .= " (".$where_arr.") ";
 			}
 		}
-		
-		
 		return $this;
 	}
 	//注意要么都使用别名，要么都不用，只有个别表用别名可能会出问题(不确定程序是否有问题，可能mysql的机制就是如此)
