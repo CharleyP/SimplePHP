@@ -50,11 +50,12 @@ class Index extends Controller
 			'name'	=>	'jack',
 			'age'	=>	20,
 		);
-		$where['id'] = 1;
+		//$where['id'] = 1;
 		$where['name'] = 1;
 		//$where = "id=1 or (id=2 and age>20)";
 		//$sql = "update user set name='jack',age=20 where id=1 and name=1";
 		$sql = $query->table("user")->where($where)->update($data);
+		echo $sql;
 	}
 	public function delete(){
 		//$sql="delete from table where ...";
