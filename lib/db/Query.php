@@ -168,8 +168,9 @@ class Query
 				$this->where = " WHERE ".$this->where;	
 			}
 			$this->query = "UPDATE ".$this->table." SET ".$update.$this->where;
-			echo $this->query;
-			exit;
+			return $this->conn(__FUNCTION__);
+			// echo $this->query;
+			// exit;
 		}
 	}
 	public function delete(){
