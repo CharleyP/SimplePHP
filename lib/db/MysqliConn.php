@@ -29,7 +29,21 @@ class MysqliConn implements Mysql
 		$this->conn = new \Mysqli($this->host, $this->username, $this->password, $this->db);
 	}
 	public function insert($query){
-
+		if ($this->conn->query($query) === TRUE) {
+			$affected_rows = $this->conn->affected_rows;
+			$last_insert_id = $this->conn->insert_id;
+			if($affected_rows > 1){
+				$last_insert_ids = "";
+				for ($i=$last_insert_id; $i < $last_insert_id+$affected_rows; $i++) { 
+					$last_insert_ids .= $i.",";
+				}
+				return trim($last_insert_ids,",");
+			}else{
+				return $last_insert_id;
+			} 
+		}else{
+			echo "Error: " . $sql . "<br>" . $this->conn->error;
+		}
 	}
 	public function update($query){
 
@@ -38,12 +52,12 @@ class MysqliConn implements Mysql
 		
 		$result = $this->conn->query($query);
 		$data=array();
-		while ($tmp=mysqli_fetch_assoc($result)) {
-		    $data[]=$tmp;
+		if ($result->num_rows > 0) {//先判断获取行数
+			while ($tmp=$result->fetch_assoc()) {
+			    $data[]=$tmp;
+			}
 		}
 		return $data;
-		// print_r($data);
-		// exit;
 	}
 	public function delete($query){
 
