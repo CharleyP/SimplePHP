@@ -46,7 +46,11 @@ class MysqliConn implements Mysql
 		}
 	}
 	public function update($query){
-
+		if ($this->conn->query($query) === TRUE) {
+			return $this->conn->affected_rows;
+		}else{
+			echo "Error: " . $sql . "<br>" . $this->conn->error;
+		}
 	}
 	public function select($query){
 		
