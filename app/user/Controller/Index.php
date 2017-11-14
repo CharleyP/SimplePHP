@@ -63,6 +63,7 @@ class Index extends Controller
 		//$where['id'] = ['in',[1,2,3]];
 		$where = "id in (1,2,3)";
 		$sql = $query->table("user")->where($where)->delete();
+		echo $sql;
 	}
 }
 
