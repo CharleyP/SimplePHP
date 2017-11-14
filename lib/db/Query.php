@@ -169,17 +169,14 @@ class Query
 			}
 			$this->query = "UPDATE ".$this->table." SET ".$update.$this->where;
 			return $this->conn(__FUNCTION__);
-			// echo $this->query;
-			// exit;
 		}
 	}
 	public function delete(){
 		if(!empty($this->where)){
-				$this->where = " WHERE ".$this->where;	
+			$this->where = " WHERE ".$this->where;	
 		}
 		$this->query = "DELETE FROM ".$this->table.$this->where;
-		echo $this->query;
-		exit;
+		return $this->conn(__FUNCTION__);
 	}
 	/*
 	$where_arr['UID'] = 1;
