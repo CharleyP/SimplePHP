@@ -46,14 +46,9 @@ class MysqliConn implements Mysql
 		}
 	}
 	public function update($query){
-		if ($this->conn->query($query) === TRUE) {
-			return $this->conn->affected_rows;
-		}else{
-			echo "Error: " . $sql . "<br>" . $this->conn->error;
-		}
+		return $this->query($query);
 	}
 	public function select($query){
-		
 		$result = $this->conn->query($query);
 		$data=array();
 		if ($result->num_rows > 0) {//先判断获取行数
@@ -64,7 +59,14 @@ class MysqliConn implements Mysql
 		return $data;
 	}
 	public function delete($query){
-
+		return $this->query($query);
+	}
+	public function query($query){
+		if ($this->conn->query($query) === TRUE) {
+			return $this->conn->affected_rows;
+		}else{
+			echo "Error: " . $sql . "<br>" . $this->conn->error;
+		}
 	}
 }
 
