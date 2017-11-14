@@ -32,17 +32,17 @@ class Index extends Controller
 	}
 	public function insert(){
 		$dataAll = [
-			['id'=>1,'name'=>'jack1','age'=>21],
-			['id'=>2,'name'=>'jack2','age'=>22],
-			['id'=>3,'name'=>'jack3','age'=>23],
+			['name'=>'jack1','age'=>21],
+			['name'=>'jack2','age'=>22],
+			['name'=>'jack3','age'=>23],
 		];
-		$dataOne = ['id'=>1,'name'=>'jack1','age'=>21,'scholl'=>null];
+		$dataOne = ['name'=>'jack1','age'=>21];
 		$query = new Query();
-		$sqlOne = $query->table("user")->insert($dataOne);
-		echo $sqlOne;
-		exit;
-		$dataAll = $query->table("p101")->insert($dataAll);
-		echo $dataAll;
+		// $sqlOne = $query->table("user")->insert($dataOne);
+		// echo $sqlOne;
+		// exit;
+		$dataAll = $query->table("user")->insert($dataAll);
+		//echo $dataAll;
 	}
 	public function update(){
 		$query = new Query();
