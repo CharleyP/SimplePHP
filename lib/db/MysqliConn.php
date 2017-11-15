@@ -29,20 +29,20 @@ class MysqliConn implements Mysql
 		$this->conn = new \Mysqli($this->host, $this->username, $this->password, $this->db);
 	}
 	public function insert($query){
-		if ($this->conn->query($query) === TRUE) {
-			$affected_rows = $this->conn->affected_rows;
-			$last_insert_id = $this->conn->insert_id;
-			if($affected_rows > 1){
-				$last_insert_ids = "";
-				for ($i=$last_insert_id; $i < $last_insert_id+$affected_rows; $i++) { 
-					$last_insert_ids .= $i.",";
-				}
-				return trim($last_insert_ids,",");
-			}else{
-				return $last_insert_id;
-			} 
+		return $this->query($query);
+	}
+	public function insertGetId($query){
+		$this->query($query);
+		$affected_rows = $this->conn->affected_rows;
+		$last_insert_id = $this->conn->insert_id;
+		if($affected_rows > 1){
+			$last_insert_ids = "";
+			for ($i=$last_insert_id; $i < $last_insert_id+$affected_rows; $i++) { 
+				$last_insert_ids .= $i.",";
+			}
+			return trim($last_insert_ids,",");
 		}else{
-			echo "Error: " . $sql . "<br>" . $this->conn->error;
+			return $last_insert_id;
 		}
 	}
 	public function update($query){
