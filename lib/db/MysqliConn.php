@@ -28,6 +28,16 @@ class MysqliConn implements Mysql
 	public function connect(){
 		$this->conn = new \Mysqli($this->host, $this->username, $this->password, $this->db);
 	}
+	public function select($query){
+		$result = $this->conn->query($query);
+		$data=array();
+		if ($result->num_rows > 0) {//先判断获取行数
+			while ($tmp=$result->fetch_assoc()) {
+			    $data[]=$tmp;
+			}
+		}
+		return $data;
+	}
 	public function insert($query){
 		return $this->query($query);
 	}
@@ -47,16 +57,6 @@ class MysqliConn implements Mysql
 	}
 	public function update($query){
 		return $this->query($query);
-	}
-	public function select($query){
-		$result = $this->conn->query($query);
-		$data=array();
-		if ($result->num_rows > 0) {//先判断获取行数
-			while ($tmp=$result->fetch_assoc()) {
-			    $data[]=$tmp;
-			}
-		}
-		return $data;
 	}
 	public function delete($query){
 		return $this->query($query);
