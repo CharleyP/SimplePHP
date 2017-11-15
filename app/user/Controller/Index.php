@@ -38,11 +38,14 @@ class Index extends Controller
 		];
 		$dataOne = ['name'=>'jack1','age'=>21];
 		$query = new Query();
+		// $sql_query = $query->insertGetId("insert into user (name,age) values ('1',20)");
+		// echo $sql_query;
+		// exit;
 		// $sqlOne = $query->table("user")->insert($dataOne);
 		// echo $sqlOne;
 		// exit;
 		$dataAll = $query->table("user")->insert($dataAll);
-		//echo $dataAll;
+		echo $dataAll;
 	}
 	public function update(){
 		$query = new Query();
