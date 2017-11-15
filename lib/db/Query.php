@@ -266,11 +266,23 @@ class Query
 	}
 	//尚未解决用别名的时候 后面的关联条件统一替换的问题
 
-	public function conn($type,$query=""){
+	public function conn($type){
 		$dataBaseInfo = APP::getConfig();
 		$mysqlTypeName = "\lib\\db\\".ucfirst($dataBaseInfo['conntype'])."Conn";
 		$data = new $mysqlTypeName();
 		return $data->$type($this->query);
+	}
+	public function query($query){
+		$dataBaseInfo = APP::getConfig();
+		$mysqlTypeName = "\lib\\db\\".ucfirst($dataBaseInfo['conntype'])."Conn";
+		$data = new $mysqlTypeName();
+		return $data->query($query);
+	}
+	public function insertGetId($query){
+		$dataBaseInfo = APP::getConfig();
+		$mysqlTypeName = "\lib\\db\\".ucfirst($dataBaseInfo['conntype'])."Conn";
+		$data = new $mysqlTypeName();
+		return $data->insertGetId($query);
 	}
 }
 
